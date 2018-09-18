@@ -18,7 +18,7 @@ if I cannot reach the node, try XMPP
 type MixTransporter struct {
 	udp      *UDPTransport
 	xmpp     *XMPPTransport
-	matirx	 *MatrixTransport
+	matirx   *MatrixTransport
 	name     string
 	protocol ProtocolReceiver
 }
@@ -46,26 +46,26 @@ Send message
 优先选择局域网,在局域网走不通的情况下,才会考虑 xmpp
 */
 func (t *MixTransporter) Send(receiver common.Address, data []byte) error {
-/*	_, isOnline := t.udp.NodeStatus(receiver)
+	/*	_, isOnline := t.udp.NodeStatus(receiver)
+		if isOnline {
+			return t.udp.Send(receiver, data)
+		} else if t.xmpp != nil {
+			return t.xmpp.Send(receiver, data)
+		} else {
+			err := fmt.Errorf("no valid %s send to %s , message=%s,response hash=%s", t.name, utils.APex2(receiver), encoding.MessageType(data[0]), utils.HPex(utils.Sha3(data, receiver[:])))
+			log.Error(err.Error())
+			return err
+		}*/
+	_, isOnline := t.udp.NodeStatus(receiver)
 	if isOnline {
-		return t.udp.Send(receiver, data)
-	} else if t.xmpp != nil {
-		return t.xmpp.Send(receiver, data)
-	} else {
-		err := fmt.Errorf("no valid %s send to %s , message=%s,response hash=%s", t.name, utils.APex2(receiver), encoding.MessageType(data[0]), utils.HPex(utils.Sha3(data, receiver[:])))
-		log.Error(err.Error())
-		return err
-	}*/
-		_, isOnline := t.udp.NodeStatus(receiver)
-	if isOnline {
-		err:=t.udp.Send(receiver, data)
-		if err!=nil{
+		err := t.udp.Send(receiver, data)
+		if err != nil {
 			return err
 		}
 	} else if t.matirx != nil {
 		//t.xmpp.Send(receiver, data)
-		err:=t.matirx.Send(receiver, data)
-		if err!=nil{
+		err := t.matirx.Send(receiver, data)
+		if err != nil {
 			return err
 		}
 	}
@@ -77,16 +77,17 @@ func (t *MixTransporter) Start() {
 	if t.udp != nil {
 		t.udp.Start()
 	}
-/*	if t.xmpp != nil {
+	/*	if t.xmpp != nil {
 		t.xmpp.Start()
 	}*/
 	if t.matirx != nil {
 		t.matirx.Start()
 	}
 }
+
 //Stop the two transporter
 func (t *MixTransporter) Stop() {
-/*	if t.xmpp != nil {
+	/*	if t.xmpp != nil {
 		t.xmpp.Stop()
 	}*/
 	if t.udp != nil {
@@ -99,20 +100,20 @@ func (t *MixTransporter) Stop() {
 
 //StopAccepting stops receiving for the two transporter
 func (t *MixTransporter) StopAccepting() {
-/*	if t.xmpp != nil {
+	/*	if t.xmpp != nil {
 		t.xmpp.StopAccepting()
 	}*/
 	if t.udp != nil {
 		t.udp.StopAccepting()
 	}
-	if t.matirx!=nil{
+	if t.matirx != nil {
 		t.matirx.StopAccepting()
 	}
 }
 
 //RegisterProtocol register receiver for the two transporter
 func (t *MixTransporter) RegisterProtocol(protcol ProtocolReceiver) {
-/*	if t.xmpp != nil {
+	/*	if t.xmpp != nil {
 		t.xmpp.RegisterProtocol(protcol)
 	}*/
 	if t.udp != nil {
